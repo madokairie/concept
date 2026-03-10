@@ -29,6 +29,7 @@ const FILES = [
   'X投稿_まだ早い反論シリーズ.md',
   'launch-data/email-analysis.md',
   'launch-data/email-lists.md',
+  'launch-data/プロモーター養成講座_メールキャンペーン5日間.md',
   'プロモーター養成講座/講座概要.md',
   'marketing-knowledge/consultation-strategy.md',
   'marketing-knowledge/challenge-launch.md',
@@ -51,6 +52,16 @@ const FILES = [
   'blog/BLOG-KNOWLEDGE.md',
   'kpi/m-create-kpi-analysis.md',
   'UTAGE_ウェビナー後フォローシナリオ.md',
+
+  // promoterフォルダ
+  'promoter/README.md',
+  'promoter/X_スレッズ投稿ルール.md',
+  'promoter/キーメッセージ集.md',
+  'promoter/ブログ記事一覧_プロモーター関連.md',
+  'promoter/講座概要.md',
+  'promoter/受講生の声.md',
+  'promoter/由紀子さんプロフィール.md',
+  'promoter/innovator_theory_knowledge.md',
 ];
 
 export async function GET() {
@@ -70,7 +81,7 @@ export async function GET() {
 
       materials.push({
         id: randomUUID(),
-        name: basename(file),
+        name: file.includes('/') ? `[${file.split('/')[0]}] ${basename(file)}` : basename(file),
         category: guessCategory(file),
         content,
         uploadedAt: new Date().toISOString(),
