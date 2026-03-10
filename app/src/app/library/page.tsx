@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Upload, Trash2, FileText } from 'lucide-react';
+import { ArrowLeft, Upload, Trash2, FileText, FolderSync } from 'lucide-react';
 import { MaterialFile } from '@/lib/types';
 import { getMaterials, saveMaterial, deleteMaterial } from '@/lib/store';
 
@@ -36,10 +36,36 @@ export default function Library() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [materials, setMaterials] = useState<MaterialFile[]>([]);
   const [filter, setFilter] = useState<string>('all');
+  const [importing, setImporting] = useState(false);
 
   useEffect(() => {
     setMaterials(getMaterials());
   }, []);
+
+  const handleBulkImport = async () => {
+    if (importing) return;
+    setImporting(true);
+    try {
+      const res = await fetch('/api/import-materials');
+      const { materials: imported } = await res.json();
+
+      const existing = getMaterials();
+      const existingNames = new Set(existing.map((m: MaterialFile) => m.name));
+      const newMaterials = imported.filter((m: MaterialFile) => !existingNames.has(m.name));
+
+      for (const m of newMaterials) {
+        saveMaterial(m);
+      }
+
+      setMaterials(getMaterials());
+      alert(`${newMaterials.length}件の素材をインポートしました（スキップ: ${imported.length - newMaterials.length}件）`);
+    } catch (e) {
+      alert('インポートに失敗しました');
+      console.error(e);
+    } finally {
+      setImporting(false);
+    }
+  };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -106,7 +132,15 @@ export default function Library() {
             <h1 className="text-xl font-normal">素材ライブラリ</h1>
             <p className="text-[11px] text-[#6A6058] mt-1">{materials.length}ファイル</p>
           </div>
-          <div>
+          <div className="flex gap-2">
+            <button
+              onClick={handleBulkImport}
+              disabled={importing}
+              className="flex items-center gap-2 px-4 py-2.5 bg-[#1A1A1A] border border-[#3A3530] text-[#A09080] rounded-lg text-sm hover:border-[#C8A96E] hover:text-[#C8A96E] transition-colors disabled:opacity-50"
+            >
+              <FolderSync size={16} className={importing ? 'animate-spin' : ''} />
+              {importing ? 'インポート中...' : 'm-createから一括取込'}
+            </button>
             <input
               ref={fileInputRef}
               type="file"

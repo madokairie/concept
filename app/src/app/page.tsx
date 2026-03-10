@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, BarChart3, FolderOpen } from 'lucide-react';
 import { Project } from '@/lib/types';
-import { getProjects, deleteProject } from '@/lib/store';
+import { getProjects, deleteProject, getDefaultStyle, saveDefaultStyle } from '@/lib/store';
+import { MADOKA_DEFAULT_STYLE } from '@/lib/default-style';
 
 const STATUS_LABELS: Record<string, string> = {
   designing: '設計中',
@@ -19,6 +20,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     setProjects(getProjects());
+    // 初回アクセス時にデフォルトスタイルを自動設定
+    if (!getDefaultStyle()) {
+      saveDefaultStyle(MADOKA_DEFAULT_STYLE);
+    }
   }, []);
 
   const grouped = {
