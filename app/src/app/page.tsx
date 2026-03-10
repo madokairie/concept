@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Plus, Trash2, BarChart3, FolderOpen } from 'lucide-react';
 import { Project } from '@/lib/types';
-import { getProjects, deleteProject, getDefaultStyle, saveDefaultStyle } from '@/lib/store';
+import { getProjects, deleteProject, getDefaultStyle, saveDefaultStyle, getMaterials, saveMaterial } from '@/lib/store';
 import { MADOKA_DEFAULT_STYLE } from '@/lib/default-style';
+import { MaterialFile } from '@/lib/types';
+
+const SEED_KEY = 'concept_materials_seeded';
 
 const STATUS_LABELS: Record<string, string> = {
   designing: '設計中',
@@ -17,12 +20,33 @@ const STATUS_LABELS: Record<string, string> = {
 export default function Dashboard() {
   const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [seeding, setSeeding] = useState(false);
 
   useEffect(() => {
     setProjects(getProjects());
+
     // 初回アクセス時にデフォルトスタイルを自動設定
     if (!getDefaultStyle()) {
       saveDefaultStyle(MADOKA_DEFAULT_STYLE);
+    }
+
+    // 初回アクセス時にナレッジを自動読み込み
+    if (!localStorage.getItem(SEED_KEY)) {
+      setSeeding(true);
+      fetch('/api/import-materials')
+        .then(res => res.json())
+        .then(({ materials: imported }) => {
+          const existing = getMaterials();
+          const existingNames = new Set(existing.map((m: MaterialFile) => m.name));
+          for (const m of imported) {
+            if (!existingNames.has(m.name)) {
+              saveMaterial(m);
+            }
+          }
+          localStorage.setItem(SEED_KEY, new Date().toISOString());
+          setSeeding(false);
+        })
+        .catch(() => setSeeding(false));
     }
   }, []);
 
@@ -50,6 +74,12 @@ export default function Dashboard() {
           <p className="text-sm text-[#6A6058]">
             完成型ファースト × 3素材収集 × 評価ループ
           </p>
+          {seeding && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-[#1A1A1A] border border-[#2A2520] rounded-lg text-[11px] text-[#C8A96E]">
+              <span className="inline-block w-2 h-2 bg-[#C8A96E] rounded-full animate-pulse" />
+              ナレッジを読み込み中...
+            </div>
+          )}
         </div>
 
         {/* Actions */}
