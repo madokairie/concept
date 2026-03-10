@@ -63,61 +63,17 @@ const FILES = [
   'promoter/由紀子さんプロフィール.md',
   'promoter/innovator_theory_knowledge.md',
 
-  // ベンチマーク
-  'benchmark/depure-cursor-seminar-lp.md',
-
-  // ブログ（まどかの文体学習用）
-  'blog/INVENTORY.md',
-  'blog/NEW-ARTICLES-202603.md',
-  'blog/REWRITE-7.md',
-  'blog/SEO-ANALYSIS-202603.md',
-  'blog/plan/2026-02-remaining.md',
-  'blog/posts/content-sales-30-to-100.txt',
-  'blog/posts/content-sales-automation.txt',
-  'blog/posts/evergreen-vs-live-launch.txt',
-  'blog/posts/online-course-student-results.txt',
-  'blog/posts/utage-auto-webinar-tips.txt',
-  'blog/posts/utage-email-and-line-both.txt',
-  'blog/posts/utage-subscription-course.txt',
-  'blog/posts/utage-vs-elme-comparison.txt',
-  'blog/posts/utage-vs-lstep-comparison.txt',
-  'blog/posts/published-articles.md',
-  'blog/posts/README.md',
-  'blog/posts/files/blog_article_inventory.md',
-  'blog/posts/files/x_article_inventory.md',
-
-  // KPIデータ
+  // KPIデータ（数字ベースのゴール設定に使う）
   'kpi/funnel-conversion.csv',
   'kpi/optin-sources.csv',
-
-  // ローンチデータ
   'launch-data/email-performance.csv',
 
-  // マーケティングナレッジ（UTAGE操作系 + 追加分析）
-  'marketing-knowledge/10分で解説！UTAGEでできること8選.txt',
+  // マーケティング戦略（コンセプト設計に直結するもののみ）
   'marketing-knowledge/threads-action-plan.md',
   'marketing-knowledge/x-analysis-2025-02.md',
-  'marketing-knowledge/LP制作・メールLINE配信・会員サイトが全て1つで完了！UTAGE完全攻略.txt',
-  'marketing-knowledge/【UTAGE】5分でできる！メール配信設定.txt',
-  'marketing-knowledge/【UTAGE】LINEメッセージの配信方法.txt',
-  'marketing-knowledge/【UTAGE】LINEリッチメニュー作成・設置方法.txt',
-  'marketing-knowledge/【UTAGE】LINE公式アカウント 自動応答メッセージ活用法.txt',
-  'marketing-knowledge/【UTAGE】たった10分で！ランディングページを作る方法.txt',
-  'marketing-knowledge/UTAGEでLINE配信設定 基本操作解説.txt',
-  'marketing-knowledge/UTAGEでたった10分でできる！商品登録をする方法.txt',
-  'marketing-knowledge/UTAGEで会員サイトを簡単に作る方法.txt',
-  'marketing-knowledge/UTAGE自動化で売れる！オートウェビナー攻略.txt',
-  'marketing-knowledge/【UTAGE】申し込みが10倍増える！ランディングページを作る方法.txt',
-  'marketing-knowledge/【超便利】個別相談・セミナー予約が完璧に！設定方法.txt',
-  'marketing-knowledge/年商10億マーケターが絶賛！UTAGEの魅力＆開発の裏側秘話.txt',
 
   // SNS分析
   'sns-posts/x/analysis/report-20260213.md',
-  'sns-posts/x/raw-data/account_analytics_20260131-0213.csv',
-  'sns-posts/x/raw-data/account_analytics_content_2026-01-31_2026-02-13.csv',
-
-  // その他
-  'task-log.md',
 ];
 
 export async function GET() {
