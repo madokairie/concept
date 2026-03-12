@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Project, ChatMessage, EvalScore as EvalScoreType, PHASE_LABELS } from '@/lib/types';
 import PhasePanel from './PhasePanel';
 import EvalScore from './EvalScore';
-import { Download, Sparkles, Loader2 } from 'lucide-react';
+import { Download, Sparkles, Loader2, ClipboardCopy, Check } from 'lucide-react';
 
 // ── CSS for PDF ──
 const PDF_CSS = `
@@ -144,6 +144,7 @@ interface Props {
 export default function Sidebar({ project, messages, isLoading, onEditPhaseData }: Props) {
   const [generating, setGenerating] = useState(false);
   const [generatedHTML, setGeneratedHTML] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const latestScore: Partial<EvalScoreType> | null = (() => {
     const phases = Object.values(project.phases);
@@ -223,20 +224,33 @@ export default function Sidebar({ project, messages, isLoading, onEditPhaseData 
             )}
           </button>
 
-          {/* Step 2: Export as PDF (only after generation) */}
+          {/* Step 2: Export as PDF or copy HTML (only after generation) */}
           {generatedHTML && (
-            <button
-              onClick={handleExportPDF}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-[#C8A96E] rounded-md text-xs text-[#0D0D0D] font-medium hover:bg-[#D4B87A] transition-colors"
-            >
-              <Download size={14} />
-              PDF出力
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleExportPDF}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#C8A96E] rounded-md text-xs text-[#0D0D0D] font-medium hover:bg-[#D4B87A] transition-colors"
+              >
+                <Download size={14} />
+                PDF出力
+              </button>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedHTML);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                }}
+                className="flex items-center justify-center gap-1.5 px-3 py-2 bg-[#1A1A18] border border-[#3A3530] rounded-md text-xs text-[#A09080] hover:border-[#C8A96E] hover:text-[#C8A96E] transition-colors"
+                title="投稿作成ツール用にHTMLをコピー"
+              >
+                {copied ? <Check size={14} className="text-[#7B9E87]" /> : <ClipboardCopy size={14} />}
+              </button>
+            </div>
           )}
 
           {generatedHTML && (
             <p className="text-[10px] text-[#4A4840] text-center">
-              生成完了 — PDF出力で印刷できます
+              PDF出力 or 📋コピーして投稿作成ツールへ
             </p>
           )}
         </div>
