@@ -6,6 +6,13 @@ const anthropic = new Anthropic({
 });
 
 export async function POST(req: NextRequest) {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return new Response(JSON.stringify({ error: 'ANTHROPIC_API_KEY が設定されていません。.env.local を確認してください。' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   try {
     const { messages, systemPrompt } = await req.json();
 

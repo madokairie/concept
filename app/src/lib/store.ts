@@ -72,6 +72,68 @@ export function deleteMaterial(id: string): void {
   localStorage.setItem(MATERIALS_KEY, JSON.stringify(materials));
 }
 
+export function updateMaterial(id: string, updates: Partial<MaterialFile>): void {
+  const materials = getMaterials();
+  const index = materials.findIndex(m => m.id === id);
+  if (index >= 0) {
+    materials[index] = { ...materials[index], ...updates };
+    localStorage.setItem(MATERIALS_KEY, JSON.stringify(materials));
+  }
+}
+
+// Duplicate project
+export function duplicateProject(sourceId: string, newName: string): Project | null {
+  const source = getProject(sourceId);
+  if (!source) return null;
+
+  const newProject: Project = {
+    ...source,
+    id: crypto.randomUUID(),
+    name: newName,
+    status: 'designing',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    results: undefined,
+  };
+  saveProject(newProject);
+  return newProject;
+}
+
+// Update phase data
+export function updatePhaseData(projectId: string, phaseKey: string, dataKey: string, value: string): void {
+  const project = getProject(projectId);
+  if (!project) return;
+  const phase = project.phases[phaseKey as keyof typeof project.phases];
+  if (!phase) return;
+  if (value === '') {
+    delete phase.data[dataKey];
+  } else {
+    phase.data[dataKey] = value;
+  }
+  saveProject(project);
+}
+
+// Save launch results
+export function saveResults(projectId: string, results: { listCount: number; applicationCount: number; revenue: number }): void {
+  const project = getProject(projectId);
+  if (!project) return;
+  project.results = {
+    ...results,
+    cvr: results.listCount > 0 ? (results.applicationCount / results.listCount) * 100 : 0,
+    recordedAt: new Date().toISOString(),
+  };
+  project.status = 'result_recorded';
+  saveProject(project);
+}
+
+// Update project status
+export function updateProjectStatus(projectId: string, status: Project['status']): void {
+  const project = getProject(projectId);
+  if (!project) return;
+  project.status = status;
+  saveProject(project);
+}
+
 // Default style
 export function getDefaultStyle(): string {
   if (typeof window === 'undefined') return '';

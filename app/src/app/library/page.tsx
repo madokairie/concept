@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Upload, Trash2, FileText, FolderSync } from 'lucide-react';
 import { MaterialFile } from '@/lib/types';
-import { getMaterials, saveMaterial, deleteMaterial } from '@/lib/store';
+import { getMaterials, saveMaterial, deleteMaterial, updateMaterial } from '@/lib/store';
 
 const CATEGORY_LABELS: Record<string, string> = {
   line: 'LINE配信',
@@ -104,13 +104,8 @@ export default function Library() {
   };
 
   const handleCategoryChange = (id: string, category: MaterialFile['category']) => {
-    const all = getMaterials();
-    const index = all.findIndex(m => m.id === id);
-    if (index >= 0) {
-      all[index].category = category;
-      localStorage.setItem('concept_materials', JSON.stringify(all));
-      setMaterials([...all]);
-    }
+    updateMaterial(id, { category });
+    setMaterials(getMaterials());
   };
 
   const filtered = filter === 'all' ? materials : materials.filter(m => m.category === filter);

@@ -1,0 +1,60 @@
+// English key → Japanese label mapping
+export const KEY_JA: Record<string, string> = {
+  main_copy: 'メインコピー',
+  sub_copy: 'サブコピー',
+  concept_direction: 'コンセプト方向性',
+  target: 'ターゲット',
+  target_keywords: 'ターゲットキーワード',
+  entry_keywords: '入り口キーワード',
+  solution_framework: '解決フレーム',
+  content_strategy: 'コンテンツ戦略',
+  emotions: '感情トリガー',
+  reach_strategy: 'リーチ戦略',
+  goal: '目標',
+  product: '商品・サービス',
+  price: '価格',
+  schedule: 'スケジュール',
+  capacity: '稼働限界',
+  payment: '決済方法',
+  funnel: '導線',
+  past_data: '過去データ',
+  past_results: '過去実績',
+  persona: 'ペルソナ',
+  deep_problems: '深い悩み',
+  ideal_future: '理想の未来',
+  objections: '買わない理由',
+  deep_psychology: '深層心理',
+  profile: 'プロフィール',
+  sns_followers: 'SNSフォロワー数',
+  success_cases: '成功事例',
+  differentiation: '差別化要因',
+  tone: 'トーン',
+  ng_expressions: 'NG表現',
+  ok_expressions: 'OK表現',
+  world_keywords: '世界観キーワード',
+  revenue_target: '売上目標',
+  applicants_target: '申込目標数',
+  cvr_target: '目標CVR',
+  list_size: 'リスト数',
+  collaboration: '協業パートナー',
+  launch_number: 'ローンチ回数',
+  launch_timeline: 'ローンチ時期',
+  promotion_period: 'プロモーション期間',
+  channels: '使用媒体',
+  account_status: 'アカウント状況',
+  strategy: '戦略',
+  target_scale: '目標規模',
+  seminar_signups: 'セミナー申込目標',
+  consultation_rate: '個別相談率',
+  attendance: '参加者数',
+  consultation_applications: '個別相談申込数',
+  conversions: '成約数',
+};
+
+export function labelOf(key: string): string {
+  return (
+    KEY_JA[key] ||
+    KEY_JA[key.replace(/([A-Z])/g, '_$1').toLowerCase()] ||
+    key.replace(/_/g, ' ')
+  );
+}

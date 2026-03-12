@@ -1,20 +1,31 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useMemo } from 'react';
 import { ChatMessage as ChatMessageType } from '@/lib/types';
 import ChatMessage from './ChatMessage';
 
 interface Props {
   messages: ChatMessageType[];
   streamingContent: string;
+  searchQuery?: string;
 }
 
-export default function ChatArea({ messages, streamingContent }: Props) {
+export default function ChatArea({ messages, streamingContent, searchQuery }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, streamingContent]);
+    if (!searchQuery) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, streamingContent, searchQuery]);
+
+  const filteredMessages = useMemo(() => {
+    if (!searchQuery || searchQuery.length < 2) return messages;
+    const q = searchQuery.toLowerCase();
+    return messages.filter(m => m.content.toLowerCase().includes(q));
+  }, [messages, searchQuery]);
+
+  const displayMessages = searchQuery && searchQuery.length >= 2 ? filteredMessages : messages;
 
   return (
     <div className="flex-1 overflow-y-auto p-6">
@@ -34,11 +45,17 @@ export default function ChatArea({ messages, streamingContent }: Props) {
           </div>
         )}
 
-        {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} />
+        {searchQuery && searchQuery.length >= 2 && (
+          <div className="text-[11px] text-[#6A6058] mb-3">
+            {filteredMessages.length}件のメッセージが見つかりました
+          </div>
+        )}
+
+        {displayMessages.map((msg) => (
+          <ChatMessage key={msg.id} message={msg} highlight={searchQuery} />
         ))}
 
-        {streamingContent && (
+        {streamingContent && !searchQuery && (
           <div className="flex justify-start mb-4">
             <div className="max-w-[80%] rounded-lg px-4 py-3 bg-[#161412] border border-[#2A2520] text-[#C8BFB0]">
               <div className="text-[10px] text-[#C8A96E] tracking-widest mb-2 uppercase">AI</div>
